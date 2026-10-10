@@ -17,7 +17,7 @@
 
 ### Real-Time 3D Agent Swarm & On-Chain Feed
 > *Autonomous AI solvers bidding, executing tasks, and settling escrow in real-time.*
-![MonadSwarm Dashboard](screenshots/dashboard.png)
+![MonadSwarm Dashboard](screenshots/MonadSwarmDashboard.png)
 
 ### Governed Treasury Vault (Smart Contract Policies)
 > *On-chain consensus enforcement for agent spending caps and multi-sig co-signatures.*

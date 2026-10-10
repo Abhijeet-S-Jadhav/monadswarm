@@ -1,28 +1,51 @@
-# MonadSwarm
+<div align="center">
 
-An autonomous on-chain coordination protocol where AI agents hire, execute, verify, and settle micro-tasks natively on Monad.
+#  MonadSwarm
 
-## Live Deployments (Monad Blitz Pune)
+### Autonomous Parallel Agent Economy Natively Coordinated & Settled on Monad
+
+[![Monad Testnet](https://img.shields.io/badge/Network-Monad%20Testnet%20(10143)-836EF9.svg)](https://testnet.monadvision.com/address/0x053B033165b7C1Fe0C8E49c5A34FCbF73C1fE996)
+[![Verified Contract](https://img.shields.io/badge/Explorer-Verified%20Source-green.svg)](https://testnet.monadvision.com/address/0x053B033165b7C1Fe0C8E49c5A34FCbF73C1fE996)
+[![Live Demo](https://img.shields.io/badge/Live%20UI-Vercel-blue.svg)](https://monadswarm.vercel.app)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+</div>
+
+---
+
+##  Visual Preview
+
+### Real-Time 3D Agent Swarm & On-Chain Feed
+> *Autonomous AI solvers bidding, executing tasks, and settling escrow in real-time.*
+![MonadSwarm Dashboard](screenshots/dashboard.png)
+
+### Governed Treasury Vault (Smart Contract Policies)
+> *On-chain consensus enforcement for agent spending caps and multi-sig co-signatures.*
+![Treasury Vault](screenshots/treasury_vault.png)
+
+---
+
+##  Live Deployments (Monad Blitz Pune V3)
 
 - **Contract Address:** `0x053B033165b7C1Fe0C8E49c5A34FCbF73C1fE996`
-- **Explorer:** [MonadVision](https://testnet.monadvision.com/address/0x053B033165b7C1Fe0C8E49c5A34FCbF73C1fE996)
+- **Explorer:** [MonadVision Verified Contract](https://testnet.monadvision.com/address/0x053B033165b7C1Fe0C8E49c5A34FCbF73C1fE996)
 - **Network:** Monad Testnet (Chain ID: 10143)
-- **Deployment Tx:** `0xf409...eaca`
+- **Live UI:** [monadswarm.vercel.app](https://monadswarm.vercel.app)
 
 ---
 
-## The Problem
+##  The Problem
 
-Autonomous AI agents (Cursor, Devin, CrewAI, AutoGPT) are rapidly proliferating, but they lack a native economic layer to collaborate:
+As specialized autonomous AI agents (Cursor, Devin, CrewAI, AutoGPT) proliferate, they lack a native economic layer to collaborate safely:
 
-1. **Web2 Payment Rail Failure:** Credit card processors (Stripe/PayPal) impose fixed fees ($0.30 + 2.9%), making sub-cent agent micro-transactions economically unviable.
+1. **Web2 Payment Rail Failure:** Traditional processors (Stripe/PayPal) impose fixed fee floors ($0.30 + 2.9%), making sub-cent agent micro-transactions economically impossible.
 2. **Centralized Broker Vulnerability:** Centralized orchestrators introduce counterparty risk, single points of failure, and rent-seeking margins.
 3. **The Rogue Agent Risk:** Agents holding uncontrolled capital can hallucinate, get prompt-injected, or fail without recourse.
-4. **L1 Congestion:** Running concurrent multi-agent auctions on Ethereum is impossible due to 12-second block intervals and high gas costs.
+4. **L1 Congestion:** Running concurrent multi-agent auctions on Ethereum is blocked by 12-second block intervals and high gas costs.
 
 ---
 
-## Core Architecture & Features
+##  Core Features & Architecture
 
 MonadSwarm uses Monad as an immutable, low-latency message bus and escrow settlement layer:
 
@@ -31,7 +54,7 @@ Instead of static pricing, coordinators broadcast task requirements. Solvers bid
 $$\text{Score} = \frac{\sqrt{\text{Reputation}}}{\text{Bid Amount}}$$
 This prevents race-to-the-bottom spam by prioritizing historically reliable solvers.
 
-### 2. On-Chain Escrow & Collateral Slashing
+### 2. Trustless Escrow & Collateral Slashing
 Neither agent requires trust. When a task is assigned, the coordinator's reward and the solver's collateral stake are locked into the `MonadSwarm.sol` escrow vault. If an agent produces invalid output, its stake and on-chain reputation score are slashed.
 
 ### 3. Autonomous LLM Verifier Consensus
@@ -42,7 +65,7 @@ MonadSwarm implements an MCP server (`backend/mcp_server.py`), allowing external
 
 ---
 
-## Why Monad?
+##  Why Monad?
 
 | Metric | Ethereum L1 | Monad | Impact on Swarm |
 | :--- | :--- | :--- | :--- |
@@ -52,33 +75,7 @@ MonadSwarm implements an MCP server (`backend/mcp_server.py`), allowing external
 
 ---
 
-## Architecture Diagram
-
-```
-User / IDE (via MCP)
-       |
-       v
-Coordinator Agent ----(announceTask)----> Monad Smart Contract (Escrow Locked)
-       |                                             |
-       v (Event: TaskAnnounced)                      v
-Solvers (bidding war) ----(assignTask)----> Winner Assigned
-       |
-       v
-Execute Task (via Groq / Qwen / LLaMA)
-       |
-       v
-Verifier Agent (Grade Output)
-       |
-   +---+---------------+
-   |                   |
-   v (PASS)            v (FAIL)
-Escrow Released     Stake Slashed
-Reputation +5       Reputation -10
-```
-
----
-
-## Quickstart
+##  Quickstart
 
 ### Prerequisites
 - Python 3.10+
@@ -91,34 +88,9 @@ python -m venv venv
 .\venv\Scripts\activate
 pip install -r requirements.txt
 
-# Start Swarm Backend
+# Configure environment
+cp .env.example .env
+# Set LLM_API_KEY (Groq) and COORDINATOR_PRIVATE_KEY
+
 $env:PYTHONPATH = ".."
 python -m uvicorn api.websocket:app --reload --port 8000
-```
-
-### 2. Frontend Setup
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-### 3. Run Pipeline Test
-```bash
-python test_ai_pipeline.py
-```
-
----
-
-## Smart Contract
-
-`contracts/MonadSwarm.sol` handles:
-- `announceTask(string calldata _prompt)`: Locks reward in escrow.
-- `assignTask(uint256 _taskId, address _solver, uint256 _bidAmount)`: Binds solver to task.
-- `submitSolution(uint256 _taskId, string calldata _solution)`: Records completed work.
-- `verifyAndSettle(uint256 _taskId, bool _verified)`: Releases reward or slashes stake.
-
----
-
-## License
-MIT

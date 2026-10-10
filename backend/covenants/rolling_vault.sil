@@ -1,0 +1,64 @@
+// rolling_vault.sil — Agent Treasury Vault v2: an on-chain streaming ALLOWANCE.
+//
+// A stateful covenant (compiled with `silverc`) that enforces a rolling spend
+// limit for an agent treasury: the agent may withdraw at most
+// `allowancePerBlock` per block elapsed since the window started. Each withdrawal
+// re-locks the change to the SAME covenant with an updated window start, so the
+// budget accrues over time and cannot be evaded — enforced by Kaspa consensus.
+// The owner can reclaim the funds at any time.
+//
+// This is the classic recurring-allowance ("Mecenas") covenant pattern, adapted
+// to the KaspaSwarm agent-treasury context. State is carried in the covenant's
+// own scriptPubKey (windowStart, the first 8-byte data slot) and rebuilt on the
+// change output via `this.activeScriptPubKey.split(9).1` — the state recursion
+// that a stateful covenant needs, which is why this is authored in SilverScript.
+//
+//   silverc backend/covenants/rolling_vault.sil -o rolling_vault.json
+//
+// PoC — testnet-10 only (Toccata / SilverScript are experimental; not for mainnet).
+
+pragma silverscript ^0.1.0;
+
+contract AgentAllowance(
+    pubkey agent,            // the autonomous agent that draws its allowance
+    byte[32] owner,          // human owner (blake2b of pubkey) — can reclaim anytime
+    int allowancePerBlock,   // max sompi the agent may draw per block elapsed
+    byte[8] windowStart,     // DAA score the current accrual window began (state)
+) {
+    // AUTO: the agent draws up to its accrued allowance. Change re-locks to this
+    // same covenant with windowStart advanced to now (resets the accrual).
+    entrypoint function draw() {
+        byte[34] agentScriptPubKey = new ScriptPubKeyP2PK(agent);
+        require(tx.outputs[0].scriptPubKey == byte[](agentScriptPubKey));
+
+        int start = int(windowStart);
+        require(tx.time >= start);
+
+        int elapsed = tx.locktime - start;
+        int allowance = elapsed * allowancePerBlock;
+
+        int minerFee = 1000;
+        int currentValue = tx.inputs[this.activeInputIndex].value;
+        int changeValue = currentValue - allowance - minerFee;
+
+        if (changeValue <= allowancePerBlock + minerFee) {
+            // Draining the last tranche: send the remainder to the agent.
+            require(tx.outputs[0].value == currentValue - minerFee);
+        } else {
+            // Draw exactly the accrued allowance; re-lock the rest to this covenant
+            // with windowStart advanced to the current block (state transition).
+            require(tx.outputs[0].value == allowance);
+            require(tx.outputs[1].value == changeValue);
+
+            byte[] newState = 8 + byte[8](tx.locktime) + this.activeScriptPubKey.split(9).1;
+            byte[35] relock = new ScriptPubKeyP2SH(blake2b(newState));
+            require(tx.outputs[1].scriptPubKey == byte[](relock));
+        }
+    }
+
+    // RECLAIM: the human owner takes the funds back at any time.
+    entrypoint function reclaim(pubkey pk, sig s) {
+        require(blake2b(pk) == owner);
+        require(checkSig(s, pk));
+    }
+}

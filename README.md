@@ -30,7 +30,7 @@
 - **Contract Address:** `0x053B033165b7C1Fe0C8E49c5A34FCbF73C1fE996`
 - **Explorer:** [MonadVision Verified Contract](https://testnet.monadvision.com/address/0x053B033165b7C1Fe0C8E49c5A34FCbF73C1fE996)
 - **Network:** Monad Testnet (Chain ID: 10143)
-- **Live UI:** [monadswarm.vercel.app](https://monadswarm.vercel.app)
+- **Live UI:** [https://monadswarm-abhijeet-s-jadhavs-projects.vercel.app/](https://monadswarm-abhijeet-s-jadhavs-projects.vercel.app/)
 
 ---
 

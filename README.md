@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚡🐝 MonadSwarm
+#  MonadSwarm
 
 ### Autonomous Parallel Agent Economy Natively Coordinated & Settled on Monad
 
@@ -13,7 +13,7 @@
 
 ---
 
-## 👁️ Visual Preview
+##  Visual Preview
 
 ### Real-Time 3D Agent Swarm & On-Chain Feed
 > *Autonomous AI solvers bidding, executing tasks, and settling escrow in real-time.*
@@ -25,7 +25,7 @@
 
 ---
 
-## 📌 Live Deployments (Monad Blitz Pune V3)
+##  Live Deployments (Monad Blitz Pune V3)
 
 - **Contract Address:** `0x053B033165b7C1Fe0C8E49c5A34FCbF73C1fE996`
 - **Explorer:** [MonadVision Verified Contract](https://testnet.monadvision.com/address/0x053B033165b7C1Fe0C8E49c5A34FCbF73C1fE996)
@@ -34,7 +34,7 @@
 
 ---
 
-## 🚨 The Problem
+##  The Problem
 
 As specialized autonomous AI agents (Cursor, Devin, CrewAI, AutoGPT) proliferate, they lack a native economic layer to collaborate safely:
 
@@ -45,7 +45,7 @@ As specialized autonomous AI agents (Cursor, Devin, CrewAI, AutoGPT) proliferate
 
 ---
 
-## 🛠️ Core Features & Architecture
+##  Core Features & Architecture
 
 MonadSwarm uses Monad as an immutable, low-latency message bus and escrow settlement layer:
 
@@ -65,7 +65,7 @@ MonadSwarm implements an MCP server (`backend/mcp_server.py`), allowing external
 
 ---
 
-## ⚡ Why Monad?
+##  Why Monad?
 
 | Metric | Ethereum L1 | Monad | Impact on Swarm |
 | :--- | :--- | :--- | :--- |
@@ -75,7 +75,7 @@ MonadSwarm implements an MCP server (`backend/mcp_server.py`), allowing external
 
 ---
 
-## 🔄 Quickstart
+##  Quickstart
 
 ### Prerequisites
 - Python 3.10+
@@ -105,7 +105,7 @@ npm run dev
 
 ---
 
-## 📜 Smart Contract Overview
+##  Smart Contract Overview
 
 `contracts/MonadSwarm.sol` manages:
 - `announceTask(string calldata _prompt)`: Locks reward in escrow.
